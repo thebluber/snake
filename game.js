@@ -20,7 +20,7 @@ window.onload = function(){
     var EVERY_SECONDS = 100;
     Crafty.c('Timer', { 
         f            : EVERY_SECONDS
-      , stop         : true
+      , STOP         : true
       , name         : ''
    
       , init: function(name){
@@ -33,7 +33,7 @@ window.onload = function(){
         }  
       , updateClock: function(){
           Crafty.trigger("timerTick",this);
-          if (!this.stop){
+          if (!this.STOP){
             var self = this;
             Crafty.e("Delay").delay(function(){self.updateClock();},this.f);
           } 
@@ -45,11 +45,11 @@ window.onload = function(){
           return this;
         }
       , stop: function(){
-          this.stop = true;
+          this.STOP = true;
           return this;
         }
       , resume: function(){
-          this.stop = false;
+          this.STOP = false;
           this.updateClock();
           return this;
         }  
@@ -240,7 +240,7 @@ window.onload = function(){
                         this.blocks[0].next_dir = "s"
                       break;
                       case Crafty.keys.SPACE:
-                          if (Timer.stop) {
+                          if (!Timer.STOP) {
                             Timer.stop();
                           } else {
                             Timer.resume();
