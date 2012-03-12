@@ -1,86 +1,150 @@
 window.onload = function(){
-    blockSize = 10;
-    gameWidth = 44 * blockSize;
-    gameHeight = 28 * blockSize;
+    BLOCKSIZE = 10;
+    WIDTH = 44 * BLOCKSIZE;
+    HEIGHT = 28 * BLOCKSIZE;
   //init Crafty
-    Crafty.init(gameWidth, gameHeight);
+    Crafty.init(WIDTH, HEIGHT);
   
   //generate a random color  
     var randColor = function(){
       return 'rgb(' + Crafty.math.randomInt(10, 255) + ',' + Crafty.math.randomInt(100, 255) + ',' + Crafty.math.randomInt(10, 255) + ')';
-    }
-  //component block
-    Crafty.c("block", {
-        init: function(){
-          this.addComponent("2D,Canvas,Color,Tween");
-          this.attr({w: blockSize, h: blockSize});  
-        },
-        makeBlock: function(x, y, current_dir, next_dir, color){
-          this.attr("x", x);
-          this.attr("y", y);
-          this.attr("current_dir", current_dir);
-          this.attr("next_dir", next_dir);
-          this.color(color);
+   }
+
+/**
+ *Timer component to trigger timerTick event every 200 ms
+ *
+ *
+ *
+ * */
+
+    var EVERY_SECONDS = 100;
+    Crafty.c('Timer', { 
+        f            : EVERY_SECONDS
+      , stop         : true
+      , name         : ''
+   
+      , init: function(name){
+          if (typeof name === 'undefined'){
+            this.name =  'timer_'+ new Date();
+          }else{
+            this.name = name;
+          }
           return this;
-        },
-        moveTo: function(){
-          this.move(this.current_dir, blockSize);
-          this.current_dir = this.next_dir; 
+        }  
+      , updateClock: function(){
+          Crafty.trigger("timerTick",this);
+          if (!this.stop){
+            var self = this;
+            Crafty.e("Delay").delay(function(){self.updateClock();},this.f);
+          } 
+        }  
+      , setFrequency: function(f){
+          if ( typeof f !== 'undefined'){
+            this.f = f;
+          }
+          return this;
         }
-    });
+      , stop: function(){
+          this.stop = true;
+          return this;
+        }
+      , resume: function(){
+          this.stop = false;
+          this.updateClock();
+          return this;
+        }  
+  
+   });
 
-  //init start or restart scene
-    var load = function(text){
-      //define start scene
-      Crafty.scene("start", function(){
-        //loading text
-        Crafty.background("black");
-        var sceneText = Crafty.e("2D, DOM, Text, Tween").attr({ w: 100, h: 20, x: (gameWidth / 2) - 50, y: (gameHeight / 2) - 20, fadeOut: "false"})
-            .text(text)
-            .css({ "text-align": "center", "color": "white"})
-            .bind("EnterFrame", function(){
-              if(Crafty.frame() % 10 === 0){
-              if(this.fadeOut){
-                this.tween({alpha: 1.0}, 10);
-                this.fadeOut = false;
-              } else {
-                this.tween({alpha: 0.0}, 10);
-                this.fadeOut = true;
-              };
-            }})
-        Crafty.e("2D, DOM, Mouse").attr({w: sceneText.w, h: sceneText.h, x: sceneText.x, y: sceneText.y})
-            .bind("Click", function(e){
-              Crafty.scene("main");
-            });
-        //background snake
-        var snake = Crafty.e("2D,Canvas")
-                        .attr({blocks: [Crafty.e("block").makeBlock(-10,0,"e","e",randColor())]})
-                        .bind('EnterFrame', function(e){
-                          var head = this.blocks[0];
-                          var last = this.blocks[this.blocks.length - 1];
-                          var max = {x: gameWidth, y: gameHeight};
-                          var min = {x: 0, y: 0};
-                          head.moveTo();
-                          for(var i = 1; i < this.blocks.length; i++){
-                            this.blocks[i].moveTo();
-                            this.blocks[i].next_dir = this.blocks[i-1].current_dir;
-                          };
-                          if (this.blocks.length >= ((max.x / blockSize) * 2) + ((max.y / blockSize) * 2)) {
-                            this.blocks = [Crafty.e("block").makeBlock(-10,0,"e","e",randColor())]
-                          } else {
-                            this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, randColor()));
-                          };
-                          if (head.x + 20 >= max.x) {head.next_dir = "s"};
-                          if (head.y + 20 >= max.y) {
-                            if (head.x - 10 <= min.x){
-                              head.next_dir = "n";
-                            } else{ head.next_dir = "w"};
-                          };
+/******
+ *
+ *
+ *
+*/
 
-                          
-                        })
-      
+
+    //component block
+      Crafty.c("block", {
+          init: function(){
+            this.addComponent("2D,Canvas,Color,Tween");
+            this.attr({w: BLOCKSIZE, h: BLOCKSIZE});  
+          },
+          makeBlock: function(x, y, current_dir, next_dir, color){
+            this.attr("x", x);
+            this.attr("y", y);
+            this.attr("current_dir", current_dir);
+            this.attr("next_dir", next_dir);
+            this.color(color);
+            return this;
+          },
+          moveTo: function(){
+            this.move(this.current_dir, BLOCKSIZE);
+            this.current_dir = this.next_dir; 
+          }
       });
+
+    //Initialize Timer
+      var Timer = Crafty.e("Timer"); 
+
+    //init start or restart scene
+      var load = function(text){
+        Timer.resume();
+     //define start scene
+        Crafty.scene("start", function(){
+          //loading text
+          Crafty.background("black");
+          //middlepoint
+          var m = {x: WIDTH/2 - 50, y: HEIGHT/2 - 10};
+          //set text
+          Crafty.e("2D, DOM, Text, Tween").attr({ w: 100, h: 20, x: m.x, y: m.y, fadeOut: "false"})
+              .text(text)
+              .css({ "text-align": "center", "color": "white"})
+              .bind("timerTick", function(){
+                if(this.fadeOut){
+                  this.tween({alpha: 1.0}, 20);
+                  this.fadeOut = false;
+                } else {
+                  this.tween({alpha: 0.0}, 20);
+                  this.fadeOut = true;
+                };
+              });
+          //trigger main scene
+          Crafty.e("2D, DOM, Mouse").attr({w: 100, h: 50, x: m.x, y: m.y})
+              .bind("Click", function(e){
+                Crafty.scene("main");
+              });
+
+          //background
+          var snake = Crafty.e("2D,Canvas")
+                            .attr({blocks: [Crafty.e("block").makeBlock(0,0,"e","e",randColor())]})
+                            .bind('timerTick', function(e){
+                              var head = this.blocks[0];
+                              var last = this.blocks[this.blocks.length - 1];
+                              var max = {x: WIDTH/BLOCKSIZE, y: HEIGHT/BLOCKSIZE};
+                              var min = {x: -10, y: 0};
+                              head.moveTo();
+                              for(var i = 1; i < this.blocks.length; i++){
+                                this.blocks[i].moveTo();
+                                this.blocks[i].next_dir = this.blocks[i-1].current_dir;
+                              };
+                              if (this.blocks.length >= max.x * 2 + max.y * 2) {
+                                this.blocks.map(function(b){b.bind("timerTick", function(e){
+                                  this.color(randColor());
+                                })});
+                                this.blocks = [Crafty.e("block").makeBlock(0,0,"e","e",randColor())];
+                              } else {
+                                this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, randColor()));
+                              };
+                              if (head.x + 20 >= max.x * BLOCKSIZE) {head.next_dir = "s"};
+                              if (head.y + 20 >= max.y * BLOCKSIZE) {
+                                if (head.x - 20 <= min.x){
+                                  head.next_dir = "n";
+                                } else{ head.next_dir = "w"};
+                              };
+                          
+                            })
+      
+        });
       Crafty.scene("start");
     };
 
@@ -94,32 +158,35 @@ window.onload = function(){
     var start = function(){
       //create feed
       var makeFeed = function(){
-        var x = Crafty.math.randomInt(blockSize, Crafty.viewport.width - blockSize);
-        var y = Crafty.math.randomInt(blockSize, Crafty.viewport.height - blockSize);
+        var x = Crafty.math.randomInt(BLOCKSIZE, WIDTH - BLOCKSIZE);
+        var y = Crafty.math.randomInt(BLOCKSIZE, HEIGHT -BLOCKSIZE );
         var color = randColor();
         return Crafty.e("2D,Canvas,Color,Tween")
-                     .attr({x: x, y: y, w: blockSize, h: blockSize, feedColor: color})
+                     .attr({x: x, y: y, w: BLOCKSIZE, h: BLOCKSIZE, feedColor: color})
                      .color(color);  
       };
       var feed = makeFeed();
       //Score
-      var score = Crafty.e("2D, DOM, Text")
+      var score = Crafty.e("2D, DOM, Text, Tween")
                         .attr({w: 100, h: 20, x: 5, y: 5})
+                        .tween({alpha: 0.5})
                         .css({"color": "white"});
-      //create a snake
+      //create a snake-
       var t1 = Crafty.e("block").makeBlock(100, 100, "e", "e", randColor());
       var t2 = Crafty.e("block").makeBlock(90, 100, "e", "e", randColor());
       var t3 = Crafty.e("block").makeBlock(80, 100, "e", "e", randColor());
       var t4 = Crafty.e("block").makeBlock(70, 100, "e", "e", randColor());
       var snake = Crafty.e("2D,Canvas")
                   .attr({blocks:[t1,t2,t3,t4]})
-                  .bind('EnterFrame', function(e){
+                  .bind('timerTick', function(e){
                     var head = this.blocks[0];
                     //update score
                     var snakeScore = this.blocks.length - 4 
                     score.text("SCORE:" + snakeScore);
                     //is the snake within the boundary
-                    var isWithin = this.blocks.reduce(function(res, e){return res && e.within(0, 0, Crafty.viewport.width, Crafty.viewport.height)});
+                    var isWithin = this.blocks.reduce(function(res, e){
+                                      return res && e.within(0, 0, WIDTH, HEIGHT)
+                                    });
                     //restart the game
                     var that = this;
                     var restart = function(){
@@ -129,22 +196,20 @@ window.onload = function(){
                       });
                       that.destroy();
                       feed.destroy();
-                      that.delay(load("YOUR SCORE:" + snakeScore +"\nRESTART"), 2000);
+                      load("YOUR SCORE:" + snakeScore +"\nRESTART");
                     };                
                     //does the snake bite itself
                     var bite = this.blocks.slice(1).reduce(function(res, t){
-                      return res || t.intersect(head.x, head.y, blockSize, blockSize);  
+                      return res || t.intersect(head.x, head.y, BLOCKSIZE, BLOCKSIZE);  
                     }, false);
                     //does the snake eat a feed
-                    var eatFeed = head.intersect(feed.x, feed.y, blockSize, blockSize);
+                    var eatFeed = head.intersect(feed.x, feed.y, BLOCKSIZE, BLOCKSIZE);
 
                     if (isWithin) {
-                      if (Crafty.frame() % 5 === 0){ 
-                        head.moveTo();
-                        for(var i = 1; i < this.blocks.length; i++){
-                          this.blocks[i].moveTo();
-                          this.blocks[i].next_dir = this.blocks[i-1].current_dir; 
-                        }
+                      head.moveTo();
+                      for(var i = 1; i < this.blocks.length; i++){
+                        this.blocks[i].moveTo();
+                        this.blocks[i].next_dir = this.blocks[i-1].current_dir; 
                       };
                   
                       if (bite) { restart()};
@@ -175,7 +240,11 @@ window.onload = function(){
                         this.blocks[0].next_dir = "s"
                       break;
                       case Crafty.keys.SPACE:
-                          Crafty.pause();
+                          if (Timer.stop) {
+                            Timer.stop();
+                          } else {
+                            Timer.resume();
+                          }
                       break;
                       default:
                         return;
