@@ -17,7 +17,7 @@ window.onload = function(){
  *
  * */
 
-    var EVERY_SECONDS = 100;
+    var EVERY_SECONDS = 70;
     Crafty.c('Timer', { 
         f            : EVERY_SECONDS
       , STOP         : true
@@ -84,11 +84,10 @@ window.onload = function(){
       });
 
     //Initialize Timer
-      var Timer = Crafty.e("Timer"); 
+      var Timer = Crafty.e("Timer").resume(); 
 
     //init start or restart scene
       var load = function(text){
-        Timer.resume();
      //define start scene
         Crafty.scene("start", function(){
           //loading text
@@ -109,15 +108,15 @@ window.onload = function(){
                 };
               });
           //trigger main scene
-          Crafty.e("2D, DOM, Mouse").attr({w: 100, h: 50, x: m.x, y: m.y})
+          Crafty.e("2D, DOM, Mouse").attr({w: 100, h: 50, x: m.x, y: m.y + 10})
               .bind("Click", function(e){
                 Crafty.scene("main");
               });
 
           //background
           var snake = Crafty.e("2D,Canvas")
-                            .attr({blocks: [Crafty.e("block").makeBlock(0,0,"e","e",randColor())]})
-                            .bind('timerTick', function(e){
+                            .attr({blocks: [Crafty.e("block").makeBlock(-10,0,"e","e",randColor())]})
+                            .bind('EnterFrame', function(e){
                               var head = this.blocks[0];
                               var last = this.blocks[this.blocks.length - 1];
                               var max = {x: WIDTH/BLOCKSIZE, y: HEIGHT/BLOCKSIZE};
@@ -128,10 +127,10 @@ window.onload = function(){
                                 this.blocks[i].next_dir = this.blocks[i-1].current_dir;
                               };
                               if (this.blocks.length >= max.x * 2 + max.y * 2) {
-                                this.blocks.map(function(b){b.bind("timerTick", function(e){
+                                this.blocks.map(function(b){b.bind("EnterFrame", function(e){
                                   this.color(randColor());
                                 })});
-                                this.blocks = [Crafty.e("block").makeBlock(0,0,"e","e",randColor())];
+                                this.blocks = [Crafty.e("block").makeBlock(-10,0,"e","e",randColor())];
                               } else {
                                 this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, randColor()));
                               };
