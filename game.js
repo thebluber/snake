@@ -204,12 +204,8 @@ window.onload = function(){
                     //does the snake eat a feed
                     var eatFeed = head.intersect(feed.x, feed.y, BLOCKSIZE, BLOCKSIZE);
 
-                    if (isWithin) {
-                      head.moveTo();
-                      for(var i = 1; i < this.blocks.length; i++){
-                        this.blocks[i].moveTo();
-                        this.blocks[i].next_dir = this.blocks[i-1].current_dir; 
-                      };
+                    if (isWithin) { 
+                      move(this);
                   
                       if (bite) { restart()};
                       if (eatFeed) {
