@@ -133,6 +133,7 @@ window.onload = function(){
                               var max = {x: WIDTH, y: HEIGHT};
                               //set direction
                               var setDir = function(){
+                                var dirs = ["e", "s", "w", "n"];
                                 if (head.next_dir == "e" && head.x == max.x - ((3 + wind) * BLOCKSIZE)){ return head.next_dir = "s";};
                                 if (head.next_dir == "s" && head.y == max.y - ((3 + wind) * BLOCKSIZE)){ return head.next_dir = "w";};
                                 if (head.next_dir == 'w' && head.x == (2 + wind) * BLOCKSIZE ){wind++;return head.next_dir = "n";};
@@ -140,9 +141,16 @@ window.onload = function(){
                               };
                               move(this);
                               setDir();
-                              if (this.blocks.length < 100) { //(max.x/BLOCKSIZE) * 2 + (max.y/BLOCKSIZE) * 2) {
+                              if (this.blocks.length < 80) { //(max.x/BLOCKSIZE) * 2 + (max.y/BLOCKSIZE) * 2) {
                                 this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, randColor()))
-                              ;}
+                              }; 
+                             
+                              //reset position
+                              if (!last.within(0,0,max.x,max.y)){
+                                this.blocks.map(function(b){b.destroy()});
+                                this.blocks = [Crafty.e("block").makeBlock(0,BLOCKSIZE,"e","e",randColor())]; 
+                                wind = 0;
+                              }
                                 
                             })
         });
@@ -160,33 +168,39 @@ window.onload = function(){
       //create feed
       var makeFeed = function(){
         var x = Crafty.math.randomInt(BLOCKSIZE, WIDTH - BLOCKSIZE);
-        var y = Crafty.math.randomInt(BLOCKSIZE, HEIGHT -BLOCKSIZE );
+        var y = Crafty.math.randomInt(BLOCKSIZE * 2, HEIGHT -BLOCKSIZE );
         var color = randColor();
         return Crafty.e("2D,Canvas,Color,Tween")
                      .attr({x: x, y: y, w: BLOCKSIZE, h: BLOCKSIZE, feedColor: color})
                      .color(color);  
       };
       var feed = makeFeed();
-      //Score
-      var score = Crafty.e("2D, DOM, Text, Tween")
-                        .attr({w: 100, h: 20, x: 5, y: 5})
-                        .tween({alpha: 0.5})
+      //Info banner
+      var banner = Crafty.e("2D, Canvas, Color")
+                         .attr({w:WIDTH + BLOCKSIZE, h:20, x: -10, y: 0})
+                         .color('rgb(75,74,74)');
+      //Score && lives
+      var info = Crafty.e("2D, DOM, Text")
+                        .attr({w: WIDTH, h: 10, x: 5, y: 0})
                         .css({"color": "white"});
-      //create a snake-
+      //create a snake
       var t1 = Crafty.e("block").makeBlock(100, 100, "e", "e", randColor());
       var t2 = Crafty.e("block").makeBlock(90, 100, "e", "e", randColor());
       var t3 = Crafty.e("block").makeBlock(80, 100, "e", "e", randColor());
       var t4 = Crafty.e("block").makeBlock(70, 100, "e", "e", randColor());
       var snake = Crafty.e("2D,Canvas")
-                  .attr({blocks:[t1,t2,t3,t4]})
+                  .attr({blocks:[t1,t2,t3,t4], lives: 3})
                   .bind('timerTick', function(e){
                     var head = this.blocks[0];
-                    //update score
+                    //update info
                     var snakeScore = this.blocks.length - 4 
-                    score.text("SCORE:" + snakeScore);
-                    //is the snake within the boundary
+                    info.text("SCORE:" + snakeScore + "  LIVES:" + this.lives);
+                    //is the snake within the boundary(WIDTH, HEIGHT - banner.h)
+                    var minBoundary = {x: BLOCKSIZE * -1, y: banner.h + BLOCKSIZE};
+                    var maxBoundary = {x: WIDTH - BLOCKSIZE, y: HEIGHT -BLOCKSIZE};
                     var isWithin = this.blocks.reduce(function(res, e){
-                                      return res && e.within(0, 0, WIDTH, HEIGHT)
+
+                                      return res && e.within(minBoundary.x, minBoundary.y, maxBoundary.x, maxBoundary.y)
                                     });
                     //restart the game
                     var that = this;
@@ -209,7 +223,7 @@ window.onload = function(){
                     if (isWithin) { 
                       move(this);
                   
-                      if (bite) { restart()};
+                      if (bite) { this.lives -= 1};
                       if (eatFeed) {
                         var last = this.blocks[this.blocks.length - 1];
                         this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, feed.feedColor));
@@ -219,8 +233,16 @@ window.onload = function(){
                         return this;
                       };
                     } else {
-                      restart();
-                    };
+                      //create a snake
+                      var t1 = Crafty.e("block").makeBlock(100, 100, "e", "e", randColor());
+                      var t2 = Crafty.e("block").makeBlock(90, 100, "e", "e", randColor());
+                      var t3 = Crafty.e("block").makeBlock(80, 100, "e", "e", randColor());
+                      var t4 = Crafty.e("block").makeBlock(70, 100, "e", "e", randColor());
+                      this.lives -= 1;
+                      this.blocks.map(function(b){b.destroy()});
+                      this.blocks = [t1,t2,t3,t4];
+                    }
+                    if (this.lives <= 0) {restart();}
                   })
                   .bind('KeyDown', function(e){
                     switch(e.keyCode){
