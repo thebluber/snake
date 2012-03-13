@@ -124,23 +124,25 @@ window.onload = function(){
               });
 
           //background
+          var wind = 0;
           var snake = Crafty.e("2D,Canvas")
-                            .attr({blocks: [Crafty.e("block").makeBlock(0,10,"e","e",randColor())]})
+                            .attr({blocks: [Crafty.e("block").makeBlock(0,BLOCKSIZE,"e","e",randColor())]})
                             .bind('EnterFrame', function(e){
                               var head = this.blocks[0];
                               var last = this.blocks[this.blocks.length - 1];
-                              var max = {x: WIDTH - BLOCKSIZE * 3, y: HEIGHT - BLOCKSIZE * 3};
-                              move(this);
+                              var max = {x: WIDTH, y: HEIGHT};
                               //set direction
                               var setDir = function(){
-                                if (head.x >= max.x && head.y <= BLOCKSIZE){ return head.next_dir = "s";};
-                                if (head.x >= max.x && head.y >= max.y){ return head.next_dir = "w";};
-                                if (head.x <= BLOCKSIZE * 2 && head.y >= max.y){ return head.next_dir = "n";};
-                                if (head.x <= BLOCKSIZE *2 && head.y <= BLOCKSIZE * 2){return  head.next_dir = "e";};
+                                if (head.next_dir == "e" && head.x == max.x - ((3 + wind) * BLOCKSIZE)){ return head.next_dir = "s";};
+                                if (head.next_dir == "s" && head.y == max.y - ((3 + wind) * BLOCKSIZE)){ return head.next_dir = "w";};
+                                if (head.next_dir == 'w' && head.x == (2 + wind) * BLOCKSIZE ){wind++;return head.next_dir = "n";};
+                                if (head.next_dir == 'n' && head.y == (2 + wind) * BLOCKSIZE ){;return  head.next_dir = "e";};
                               };
+                              move(this);
                               setDir();
-                              if (this.blocks.length < (max.x/BLOCKSIZE) * 2 + (max.y/BLOCKSIZE) * 2) {
-                                this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, randColor()));}
+                              if (this.blocks.length < 100) { //(max.x/BLOCKSIZE) * 2 + (max.y/BLOCKSIZE) * 2) {
+                                this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, randColor()))
+                              ;}
                                 
                             })
         });
