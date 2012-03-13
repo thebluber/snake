@@ -17,7 +17,7 @@ window.onload = function(){
  *
  * */
 
-    var EVERY_SECONDS = 100;
+    var EVERY_SECONDS = 70;
     Crafty.c('Timer', { 
         f            : EVERY_SECONDS
       , STOP         : true
