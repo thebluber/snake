@@ -206,12 +206,8 @@ window.onload = function(){
                     //does the snake eat a feed
                     var eatFeed = head.intersect(feed.x, feed.y, BLOCKSIZE, BLOCKSIZE);
 
-                    if (isWithin) {
-                      head.moveTo();
-                      for(var i = 1; i < this.blocks.length; i++){
-                        this.blocks[i].moveTo();
-                        this.blocks[i].next_dir = this.blocks[i-1].current_dir; 
-                      };
+                    if (isWithin) { 
+                      move(this);
                   
                       if (bite) { restart()};
                       if (eatFeed) {
@@ -229,16 +225,24 @@ window.onload = function(){
                   .bind('KeyDown', function(e){
                     switch(e.keyCode){
                       case Crafty.keys.RIGHT_ARROW:
-                        this.blocks[0].next_dir = "e"
+                        if (this.blocks[0].current_dir != "w"){
+                          return this.blocks[0].next_dir = "e";
+                        }
                       break;
                       case Crafty.keys.LEFT_ARROW:
-                        this.blocks[0].next_dir = "w"
+                        if (this.blocks[0].current_dir != "e"){
+                          return this.blocks[0].next_dir = "w";
+                        }
                       break;
                       case Crafty.keys.UP_ARROW:
-                        this.blocks[0].next_dir = "n"
+                        if (this.blocks[0].current_dir != "s"){
+                          return this.blocks[0].next_dir = "n";
+                        }
                       break;
                       case Crafty.keys.DOWN_ARROW:
-                        this.blocks[0].next_dir = "s"
+                        if (this.blocks[0].current_dir != "n"){
+                          return this.blocks[0].next_dir = "s";
+                        }
                       break;
                       case Crafty.keys.SPACE:
                           if (!Timer.STOP) {
