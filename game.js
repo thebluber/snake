@@ -188,8 +188,8 @@ window.onload = function(){
     var start = function(){
       //create feed
       var makeFeed = function(){
-        var x = Crafty.math.randomInt(BLOCKSIZE, WIDTH - BLOCKSIZE);
-        var y = Crafty.math.randomInt(BLOCKSIZE * 2, HEIGHT -BLOCKSIZE );
+        var x = Crafty.math.randomInt(BLOCKSIZE * 3, WIDTH - BLOCKSIZE * 2);
+        var y = Crafty.math.randomInt(BLOCKSIZE * 3, HEIGHT -BLOCKSIZE * 2);
         var color = randColor();
         return Crafty.e("2D,Canvas,Color,Tween")
                      .attr({x: x, y: y, w: BLOCKSIZE, h: BLOCKSIZE, feedColor: color})
