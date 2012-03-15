@@ -212,23 +212,21 @@ window.onload = function(){
 
       var achievements = {};
       var snake = Crafty.e("2D,Canvas")
-                  .attr({blocks:[t1,t2,t3,t4], lives: 3})
+                  .attr({blocks:[t1,t2,t3,t4], lives: 3, score: 0})
                   .bind('timerTick', function(e){
                     var head = this.blocks[0];
-                    //update info
-                    var snakeScore = this.blocks.length - 4 
-                    info.text("SCORE:" + snakeScore + "  LIVES:" + this.lives).textFont({weight: 'normal', size: '15px'});
+                    info.text("SCORE:" + this.score + "  LIVES:" + this.lives).textFont({weight: 'normal', size: '15px'});
               
                     //is the snake within the boundary(WIDTH, HEIGHT - banner.h)
                     var minBoundary = {x: BLOCKSIZE * -1, y: banner.h + BLOCKSIZE};
-                    var maxBoundary = {x: WIDTH - BLOCKSIZE, y: HEIGHT -BLOCKSIZE};
+                    var maxBoundary = {x: WIDTH, y: HEIGHT};
                     var isWithin = this.blocks.reduce(function(res, e){
 
                                       return res && e.within(minBoundary.x, minBoundary.y, maxBoundary.x, maxBoundary.y)
                                     });
 
                     // Trigger Achievement
-                    if(!achievements['10points'] && snakeScore == 10){
+                    if(!achievements['10points'] && this.score == 10){
                       achievements['10points'] = true;
                       Crafty.e('Achievement').text('Looooong Snake!');
                     }
@@ -242,7 +240,7 @@ window.onload = function(){
                       });
                       that.destroy();
                       feed.destroy();
-                      load("YOUR SCORE:" + snakeScore +"\nRESTART");
+                      load("YOUR SCORE:" + this.score +"\nRESTART");
                     };                
                     //does the snake bite itself
                     var bite = this.blocks.slice(1).reduce(function(res, t){
@@ -256,6 +254,7 @@ window.onload = function(){
                   
                       if (bite) { this.lives -= 1};
                       if (eatFeed) {
+                        this.score += 1;
                         var last = this.blocks[this.blocks.length - 1];
                         this.blocks.push(Crafty.e("block").makeBlock(last.x, last.y, "", last.current_dir, feed.feedColor));
                         feed.tween({alpha: 0.0}, 10);
