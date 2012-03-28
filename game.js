@@ -1,105 +1,14 @@
 window.onload = function(){
-    BLOCKSIZE = 10;
-    WIDTH = 64 * BLOCKSIZE;
-    HEIGHT = 48 * BLOCKSIZE;
+    BLOCKSIZE = 14;
+    WIDTH = 50 * BLOCKSIZE;
+    HEIGHT = 50 * BLOCKSIZE;
   //init Crafty
-    Crafty.init(WIDTH, HEIGHT);
+    Crafty.init(WIDTH, HEIGHT).canvas.init();
   
   //generate a random color  
     var randColor = function(){
       return 'rgb(' + Crafty.math.randomInt(10, 255) + ',' + Crafty.math.randomInt(100, 255) + ',' + Crafty.math.randomInt(10, 255) + ')';
    }
-
-    Crafty.c('Achievement',{
-      init: function(){
-        this._image = Crafty.e('2D, DOM, Image, Tween').image('images/achievement.png').attr({x: 30, y: 30});
-        this._text = "Set the Text";
-        this._center = WIDTH / 2 - ((this._text.length * 15) / 2);
-        this._textElement = Crafty.e('2D, DOM, Text, Tween').text(this._text).textColor('#dacfca').attr({x: this._center, y: 110, w:400}).textFont({weight: 'bold', size: '20px', family: 'Arial'});
-
-        this._image.tween({alpha: 0.0}, 200);
-        this._textElement.tween({alpha: 0.0}, 200);
-      },
-
-      text: function(newText) {
-        this._text = newText;
-        this._center = WIDTH / 2 - ((this._text.length * 12) / 2) ;
-        this._textElement.attr({x: this._center}).text(this._text);
-      }
-     
-    });
-/**
- *Timer component to trigger timerTick event every 200 ms
- *
- *
- *
- * */
-
-    var EVERY_SECONDS = 70;
-    Crafty.c('Timer', { 
-        f            : EVERY_SECONDS
-      , STOP         : true
-      , name         : ''
-   
-      , init: function(name){
-          if (typeof name === 'undefined'){
-            this.name =  'timer_'+ new Date();
-          }else{
-            this.name = name;
-          }
-          return this;
-        }  
-      , updateClock: function(){
-          Crafty.trigger("timerTick",this);
-          if (!this.STOP){
-            var self = this;
-            Crafty.e("Delay").delay(function(){self.updateClock();},this.f);
-          } 
-        }  
-      , setFrequency: function(f){
-          if ( typeof f !== 'undefined'){
-            this.f = f;
-          }
-          return this;
-        }
-      , stop: function(){
-          this.STOP = true;
-          return this;
-        }
-      , resume: function(){
-          this.STOP = false;
-          this.updateClock();
-          return this;
-        }  
-  
-   });
-
-/******
- *
- *
- *
-*/
-
-
-    //component block
-      Crafty.c("block", {
-          init: function(){
-            this.addComponent("2D,Canvas,Color,Tween");
-            this.attr({w: BLOCKSIZE, h: BLOCKSIZE});  
-          },
-          makeBlock: function(x, y, current_dir, next_dir, color){
-            this.attr("x", x);
-            this.attr("y", y);
-            this.attr("current_dir", current_dir);
-            this.attr("next_dir", next_dir);
-            this.color(color);
-            return this;
-          },
-          moveTo: function(){
-            this.move(this.current_dir, BLOCKSIZE);
-            this.current_dir = this.next_dir; 
-          }
-      });
     //move the snake
       var move = function(snake){
         var head = snake.blocks[0];
@@ -312,6 +221,6 @@ window.onload = function(){
 
     Crafty.load(['images/achievement.png'],
         function() {
-          load("START");
+          Crafty.scene("main");
         });
 }

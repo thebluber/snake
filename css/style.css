@@ -1,0 +1,30 @@
+body, html {
+      background-color:rgb(60,60,60);
+      min-height:100%;
+      padding:1px 0 0 0;
+      margin:-1px 0 0 0;
+    }
+    html{
+      height:100%;
+    }
+    
+#cr-stage {
+      border: 1px solid #FFF;
+      font-family:"Overlock SC", Helvetica, Arial, sans-serif;
+      font-size:14px;
+      line-height:16px;
+      margin-top:30px;
+    }
+.footer p{
+
+      color: #FFF;
+      margin-top: 45px;
+      padding: 35px 0 36px;
+      border-top: 1px solid #E5E5E5;
+}
+.page-header p{
+      color: #FFF;
+      margin: 0px 0 0 20;
+      font-size: 20px;
+      line-height: 2;
+}
