@@ -1,14 +1,13 @@
 window.onload = function(){
-  BLOCKSIZE = 13;
-  SPACE = 2;
-  WIDTH = 50 * (BLOCKSIZE + SPACE);
-  HEIGHT = 50 * (BLOCKSIZE + SPACE);
+  BLOCKSIZE = 15;
+  WIDTH = 50 * BLOCKSIZE;
+  HEIGHT = 40 * BLOCKSIZE;
   //init Crafty
   Crafty.init(WIDTH, HEIGHT).canvas.init();
 
   //loading scene
   Crafty.scene('loading', function(){
-    Crafty.load(["images/achievement.png"], function() {
+    Crafty.load(["images/achievement.png", 'images/heart.svg', 'images/snake.svg', 'images/big.svg'], function() {
         Crafty.scene("main");
     });
     

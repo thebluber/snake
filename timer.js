@@ -5,10 +5,10 @@
  *
  *
  * */
-
-    var EVERY_SECONDS = 70;
-    Crafty.c('Timer', { 
-        f            : EVERY_SECONDS
+    Crafty.c('Timer', {
+        _f           : 80  
+      , _start       : 80
+      , f            : this._start
       , STOP         : true
       , name         : ''
    
@@ -24,12 +24,15 @@
           Crafty.trigger("timerTick",this);
           if (!this.STOP){
             var self = this;
-            Crafty.e("Delay").delay(function(){self.updateClock();},this.f);
+            Crafty.e("Delay").delay(function(){
+              self.updateClock();
+            },this.f);
           } 
         }  
       , setFrequency: function(f){
           if ( typeof f !== 'undefined'){
-            this.f = f;
+            this._f = f;
+            this.f = this._f;
           }
           return this;
         }
@@ -37,12 +40,18 @@
           this.STOP = true;
           return this;
         }
-      , resume: function(stepFrames){
-          this.f = stepFrames;
+      , resume: function(){
+          this.f = this._f;
           this.STOP = false;
           this.updateClock();
           return this;
-        }  
+        }
+      , reset: function(){
+          this.f = this._start;
+          this.STOP = false;
+          this.updateClock();
+          return this;
+        }
   
    });
 
@@ -51,4 +60,3 @@
  *
  *
 */
-

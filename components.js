@@ -3,11 +3,11 @@
     //component block
       Crafty.c("block", {
           init: function(){
-            this.addComponent("2D,Canvas,Color,Tween, Collision")
+            this.addComponent("2D,Canvas,Color,Tween, Collision, snake")
                 .attr({w: BLOCKSIZE, h: BLOCKSIZE});  
           },
           makeBlock: function(x, y, current_dir, next_dir, color){
-            this.attr({x: x, y: y, current_dir: current_dir, next_dir: next_dir, COLOR: color, feed: false})
+            this.attr({x: x, y: y, current_dir: current_dir, next_dir: next_dir, COLOR: color, current_feed: false, next_feed: false})
                 .color(color);
             return this;
           },
@@ -18,18 +18,19 @@
               return this;
             } else {
               this.attr({old_x: this.x, old_y: this.y})
-                  .move(this.current_dir, BLOCKSIZE + SPACE);
+                  .move(this.current_dir, BLOCKSIZE);
               this.current_dir = this.next_dir; 
+              this.current_feed = this.next_feed;
               return this;
             }
           },
           eating: function(){
-            if (this.feed){
-              var big = Crafty.e('2D, Canvas, Color, Tween')
-                              .attr({w: this.w + 6, h: this.h + 6, x: this.x - 3, y: this.y - 3})
+            if (this.current_feed){
+              var big = Crafty.e('2D, Canvas, Color, Tween, big')
+                              .attr({w: this.w + 4, h: this.h + 4, x: this.x - 2, y: this.y - 2})
                               .color(this.COLOR)
                               .tween({alpha: 0.0}, 20);
-              window.setTimeout(function(){big.destroy(); this.feed = false}, 4000);
+              window.setTimeout(function(){big.destroy(); }, 4000);
             };
               return this;
           }
@@ -53,21 +54,30 @@
     Crafty.c('feed', {
       init: function(){
         this.addComponent('2D, Canvas, Color, Tween, Collision')
-            .attr({w: BLOCKSIZE + SPACE, h: BLOCKSIZE + SPACE});
+            .attr({w: BLOCKSIZE, h: BLOCKSIZE});
       },
 
-      makeFeed: function(x, y, color){
-        this.attr({x: x, y: y, COLOR: color})
+      makeFeed: function(x, y, color, timeOut){
+        this.attr({x: x, y: y, COLOR: color, timeOut: timeOut, eaten: false})
             .color(color);
         return this;
       },
-
+      
       fadeOut: function(){
-        this.tween({alpha: 0.0}, 20);
-        var that = this;
-        window.setTimeout(function(){that.destroy();}, 1000);
-      }
-    
+            this.removeComponent('Collision')
+                .tween({alpha: 0.0}, 20);
+      },
+
+      setTimeOut: function(){
+            Crafty.e('2D, Canvas, Color, Tween, Gravity, Collision, Border')
+                  .attr({w: this.w, h: this.h, x: this.x, y: this.y})
+                  .color(this.COLOR)
+                  .gravity('Border')
+                  .color('white');
+            this.destroy();
+      },
+
+
     });
  //achievements
     Crafty.c('Achievement',{
