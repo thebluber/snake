@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="19"
-   height="19"
+   width="23"
+   height="23"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="Neues Dokument 1">
+   sodipodi:docname="big.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -24,16 +24,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="32"
-     inkscape:cx="8.401013"
-     inkscape:cy="8.7023509"
+     inkscape:zoom="16"
+     inkscape:cx="-13.344931"
+     inkscape:cy="5.2478445"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1918"
-     inkscape:window-height="1049"
+     inkscape:window-height="1004"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="45"
      inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
@@ -51,19 +51,57 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Ebene#1"
+     style="display:none">
+    <rect
+       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="rect6344"
+       width="23"
+       height="23"
+       x="0"
+       y="0" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Ebene"
+     style="display:inline">
+    <rect
+       style="opacity:0.40606061;fill:#e6e6ed;fill-opacity:0.69281048000000001;fill-rule:evenodd;stroke:none"
+       id="rect5833"
+       width="23"
+       height="23"
+       x="0"
+       y="0" />
+  </g>
+  <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1033.3622)">
-    <path
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="M 0 0 L 0 19 L 19 19 L 19 0 L 0 0 z M 2 1 L 17 1 C 17.554 1 18 1.446 18 2 L 18 17 C 18 17.554 17.554 18 17 18 L 2 18 C 1.446 18 1 17.554 1 17 L 1 2 C 1 1.446 1.446 1 2 1 z "
-       transform="translate(0,1033.3622)"
-       id="rect2987" />
+     transform="translate(0,-1029.3622)"
+     style="display:inline">
+    <g
+       transform="matrix(1.5333333,0,0,1.533335,0,-561.2616)"
+       id="g5188">
+      <path
+         sodipodi:nodetypes="cccccccccccccc"
+         inkscape:connector-curvature="0"
+         id="rect2987-2"
+         d="m 0,1037.3622 0,15 15,0 0,-15 z m 4.761905,0.381 5.476191,0 4.380952,4.3809 0,5.4762 -4.380952,4.3809 -5.476191,0 -4.38095261,-4.3809 0,-5.4762 z"
+         style="fill:#000000;stroke:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="rect4543"
+         transform="translate(0,1037.3622)"
+         d="M 5.71875,3.65625 3,6.1875 4.65625,7.59375 3,9 l 2.71875,2.53125 1.78125,-1.5 1.78125,1.5 L 12,9 10.34375,7.59375 12,6.1875 9.28125,3.65625 7.5,5.15625 l -1.78125,-1.5 z"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
   </g>
 </svg>

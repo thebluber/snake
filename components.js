@@ -27,10 +27,10 @@
           eating: function(){
             if (this.current_feed){
               var big = Crafty.e('2D, Canvas, Color, Tween, big')
-                              .attr({w: this.w + 4, h: this.h + 4, x: this.x - 2, y: this.y - 2})
+                              .attr({w: this.w + 8, h: this.h + 8, x: this.old_x - 4, y: this.old_y - 4})
                               .color(this.COLOR)
                               .tween({alpha: 0.0}, 20);
-              window.setTimeout(function(){big.destroy(); }, 4000);
+              window.setTimeout(function(){big.destroy(); }, 1000);
             };
               return this;
           }
@@ -40,7 +40,14 @@
         init: function(){
            this.requires('block')
                .addComponent('Collision')
+               .removeComponent('snake')
         },
+
+        addPic: function(pic) {
+           this.attr({pic: pic})
+               .addComponent(pic);
+        return this;
+        }
 /*
         makeHead: function(x, y, current_dir, next_dir, color){
           this.attr({x: x, y: y, current_dir: current_dir, next_dir: next_dir, COLOR: color})
@@ -53,7 +60,7 @@
  //feed
     Crafty.c('feed', {
       init: function(){
-        this.addComponent('2D, Canvas, Color, Tween, Collision')
+        this.addComponent('2D, Canvas, Color, Tween, Collision, egg')
             .attr({w: BLOCKSIZE, h: BLOCKSIZE});
       },
 

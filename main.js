@@ -3,12 +3,23 @@
     snake: [0, 0]  
  
   }); 
+  Crafty.sprite(15, 'images/snakehead.svg', {
+    head1: [0, 0],  
+    head2: [1, 0],  
+    head3: [2, 0],  
+    head4: [3, 0],  
+ 
+  }); 
   Crafty.sprite(15, 'images/heart.svg', {
     heart: [0, 0]  
  
   }); 
-  Crafty.sprite(19, 'images/big.svg', {
+  Crafty.sprite(23, 'images/big.svg', {
     big: [0, 0]  
+ 
+  }); 
+  Crafty.sprite(15, 'images/egg.svg', {
+    egg: [0, 0]  
  
   }); 
 
@@ -44,7 +55,7 @@
   };
   //make a snake
   var startSnake = function(){
-    Crafty.e('block, snakeHead').makeBlock(150, 150, 'e', 'e', randColor());  
+    Crafty.e('snakeHead').makeBlock(150, 150, 'e', 'e', randColor()).addPic('head1');  
     Crafty.e('block').makeBlock(150 - BLOCKSIZE, 150, 'e', 'e', randColor());
     Crafty.e('block').makeBlock(150 - BLOCKSIZE * 2, 150, 'e', 'e', randColor());
     Crafty.e('block').makeBlock(150 - BLOCKSIZE * 3, 150, 'e', 'e', randColor());
@@ -149,6 +160,7 @@
     if (last.current_feed){
       Crafty.e('block').makeBlock(last.x, last.y, "", last.current_dir, last.feed_COLOR);
       last = Crafty(Crafty('block')[Crafty('block').length - 1]);
+      Crafty('big').destroy();
     }; 
   }
 
@@ -250,6 +262,7 @@ Crafty.scene('main', function(){
                       var blocks = Crafty('block');
                       var head = Crafty(blocks[0]);
                       var _changeDir = function(dir){
+                         head.removeComponent(head.pic);
                          head.current_dir = dir;
                          head.next_dir = dir;
                          for (var i = 1; i < blocks.length; i++){
@@ -261,24 +274,28 @@ Crafty.scene('main', function(){
                           case Crafty.keys.RIGHT_ARROW:
                             if (head.current_dir != "w"){
                               _changeDir('e');
+                              head.addComponent('head1');
                             }
                           break;
      
                           case Crafty.keys.LEFT_ARROW:
                             if (head.current_dir != "e"){
                               _changeDir('w');
+                              head.addComponent('head3');
                             }
                           break;
         
                           case Crafty.keys.UP_ARROW:
                             if (head.current_dir != "s"){
                               _changeDir('n');
+                              head.addComponent('head4');
                             }
                           break;
 
                           case Crafty.keys.DOWN_ARROW:
                             if (head.current_dir != "n"){
                               _changeDir('s');
+                              head.addComponent('head2');
                             }
                           break;
 

@@ -2,7 +2,6 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -15,33 +14,9 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="snake.svg">
+   sodipodi:docname="egg.svg">
   <defs
-     id="defs4">
-    <linearGradient
-       id="linearGradient3838"
-       osb:paint="solid">
-      <stop
-         style="stop-color:#808080;stop-opacity:1;"
-         offset="0"
-         id="stop3840" />
-    </linearGradient>
-    <marker
-       markerWidth="13"
-       markerHeight="13"
-       orient="auto"
-       id="marker3802">
-      <rect
-         ry="1"
-         rx="1"
-         y="-6.5"
-         x="-6.5"
-         height="13"
-         width="13"
-         id="rect3783"
-         style="fill:#808080;fill-opacity:1;stroke:none" />
-    </marker>
-  </defs>
+     id="defs4" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -49,21 +24,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.313708"
-     inkscape:cx="2.9910714"
-     inkscape:cy="7.1268617"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="-10.949339"
+     inkscape:cy="45.280159"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      showgrid="true"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
      inkscape:snap-grids="true"
      inkscape:window-width="1918"
      inkscape:window-height="1019"
      inkscape:window-x="0"
-     inkscape:window-y="30"
+     inkscape:window-y="15"
      inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
@@ -91,16 +62,19 @@
      id="layer1"
      transform="translate(0,-1037.3622)">
     <path
-       style="fill:#000000;stroke:none"
-       d="m 0,0 0,15 15,0 0,-15 z m 5,1 5,0 4,4 0,5 -4,4 -5,0 -4,-4 0,-5 z"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       d="M 0 0 L 0 15 L 15 15 L 15 0 L 0 0 z M 5 1 L 10 1 L 13.59375 4 L 13.5625 12.96875 L 11 14 L 4 14 L 1.40625 13.03125 L 1.40625 4 L 5 1 z "
        transform="translate(0,1037.3622)"
-       id="rect2987"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccccccccc" />
+       id="rect2987" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Ebene">
     <path
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="M 5.71875 3.65625 L 3 6.1875 L 4.65625 7.59375 L 3 9 L 5.71875 11.53125 L 7.5 10.03125 L 9.28125 11.53125 L 12 9 L 10.34375 7.59375 L 12 6.1875 L 9.28125 3.65625 L 7.5 5.15625 L 5.71875 3.65625 z "
-       transform="translate(0,1037.3622)"
-       id="rect4543" />
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 1,8 4,2 2,-3 1,0 2,3 2,-4 2,2 L 12,6 10,10 8,7 7,7 5,10 z"
+       id="path5269"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

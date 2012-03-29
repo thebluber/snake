@@ -7,7 +7,7 @@ window.onload = function(){
 
   //loading scene
   Crafty.scene('loading', function(){
-    Crafty.load(["images/achievement.png", 'images/heart.svg', 'images/snake.svg', 'images/big.svg'], function() {
+    Crafty.load(["images/achievement.png", 'images/heart.svg', 'images/egg.svg','images/snakehead.svg','images/snake.svg', 'images/big.svg'], function() {
         Crafty.scene("main");
     });
     
