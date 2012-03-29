@@ -1,4 +1,7 @@
 window.onload = function(){
+  //anti scrolling
+  document.onkeydown=function(){return event.keyCode!=38 && event.keyCode!=40};
+
   BLOCKSIZE = 15;
   WIDTH = 50 * BLOCKSIZE;
   HEIGHT = 40 * BLOCKSIZE;
