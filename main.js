@@ -24,7 +24,6 @@
   }); 
 
 
-
   COLORS = [
     'rgb(255, 0, 0)',
     'rgb(255, 0, 0)',
@@ -53,6 +52,41 @@
     var rand = Crafty.math.randomInt(0, COLORS.length - 1);
     return COLORS[rand];
   };
+
+/*
+ *
+ *
+ *BORDER
+ *
+ *
+ *
+ */  
+
+ //set border
+  var setBorder = function(){
+    Crafty.e('2D, Canvas, Color, Border')
+          .attr({x: -15, y: 0, w: 15, h: Crafty.viewport.height})
+          .color('white');
+    Crafty.e('2D, Canvas, Color, Border')
+          .attr({x: 0, y: -15, w: Crafty.viewport.width, h: 15})
+          .color('white');
+    Crafty.e('2D, Canvas, Color, Border')
+          .attr({x: Crafty.viewport.width, y: 0, w: 15, h: Crafty.viewport.height})
+          .color('white');
+    Crafty.e('2D, Canvas, Color, Border')
+          .attr({x: 0, y: Crafty.viewport.height, w: Crafty.viewport.width, h: 15})
+          .color('white');
+  };
+
+
+/******************************************************************************
+ *
+ *FOR SNAKE
+ *
+ *
+ *****************************************************************************
+ */
+
   //make a snake
   var startSnake = function(){
     Crafty.e('snakeHead').makeBlock(150, 150, 'e', 'e', randColor()).addPic('head1');  
@@ -78,60 +112,157 @@
         }
       };
   };
-  //crop snake via color
-  var crop = function(){
+
+
+
+/****************************************************************************
+ *
+ *
+ *SNAKE COLORED BLOCKS
+ *
+ *
+ ****************************************************************************
+ */
+
+ 
+ //same colored blocks in range [Num position in Crafty('block')]
+  var sameColored = function(color, n){
     var blocks = Crafty('block');
-    var b1 = Crafty(blocks[blocks.length - 1]);
-    var b2 = Crafty(blocks[blocks.length - 2]);
-    var b3 = Crafty(blocks[blocks.length - 3]);
-    var b4 = Crafty(blocks[blocks.length - 4]);
-    if (b1.COLOR == b2.COLOR && b2.COLOR == b3.COLOR) {
-       Crafty.e('2D, Canvas, Color, Tween, big')
-             .attr({w: b2.w + 4, h: b2.h + 4, x: b2.x - 2, y: b2.y - 2})
-             .color(b1.COLOR)
-             .tween({alpha: 0.0}, 30);
-      b1.destroy();
-       Crafty.e('2D, Canvas, Color, Tween, big')
-             .attr({w: b3.w + 4, h: b3.h + 4, x: b3.x - 2, y: b3.y - 2})
-             .color(b1.COLOR)
-             .tween({alpha: 0.0}, 30);
-      b2.destroy();
-       Crafty.e('2D, Canvas, Color, Tween, big')
-             .attr({w: b3.w + 4, h: b3.h + 4, x: b4.x - 2, y: b4.y - 2})
-             .color(b1.COLOR)
-             .tween({alpha: 0.0}, 30);
-      b3.destroy();
-    }
+    var acc = [];//store the reference position of blocks
+    
+    for (var i = 5; i < blocks.length; i++) {
+        if (Crafty(blocks[i]).COLOR === color) {
+          acc.push(i); };
+    };
+    //detect range in acc helper function for reduce below
+    var detectRange = function(res, el) {
+      var subArr = res[res.length - 1];
+      if (subArr && (subArr[subArr.length - 1] + 1 == el)) {
+        subArr.push(el);
+      } else {
+        res.push([el]);
+      };
+
+      return res;
+    };
+    
+    return acc.reduce(detectRange, [])
+              .filter(function(el){
+                return el.length >= n;
+              });
   };
 
-  //set border
-  var setBorder = function(){
-    Crafty.e('2D, Canvas, Color, Border')
-          .attr({x: -15, y: 0, w: 15, h: Crafty.viewport.height})
-          .color('white');
-    Crafty.e('2D, Canvas, Color, Border')
-          .attr({x: 0, y: -15, w: Crafty.viewport.width, h: 15})
-          .color('white');
-    Crafty.e('2D, Canvas, Color, Border')
-          .attr({x: Crafty.viewport.width, y: 0, w: 15, h: Crafty.viewport.height})
-          .color('white');
-    Crafty.e('2D, Canvas, Color, Border')
-          .attr({x: 0, y: Crafty.viewport.height, w: Crafty.viewport.width, h: 15})
-          .color('white');
-  }
+  //delete the same colored Boxes
+  var crop = function(color){
+    var blocks = Crafty('block');
+    var same = sameColored(color, 3);
+
+    //delete blocks in range helper function for map below
+    var distruct = function(arr) {
+        arr.map(function(i){
+          var big = Crafty(blocks[i]).attr({w: this.w + 8, h: this.h + 8, x: this.x - 4, y: this.y - 4})
+                                     .removeComponent('snake')
+                                     .addComponent('big')
+                                     .tween({alpha: 0.0}, 20);
+          setTimeout(function(){ 
+            STATISTIC[big.COLOR] -= 1;
+            big.destroy(); 
+          }, 500);
+        });
+    }; 
+
+    same.map(distruct);
+  };
+  
+  //make same colored blocks bigger
+  var boost = function(color){
+    var s = sameColored(color, 2);
+    var blocks = Crafty('block');
+    var helper = function(arr) {
+        arr.map(function(i){
+          var b = Crafty(blocks[i]);
+          var big = Crafty.e('2D, Canvas, Color, Tween, big, block')
+                          .attr({w: b.w + 8, h: b.h + 8, x: b.old_x - 4, y: b.old_y - 4, current_dir: b.current_dir, next_dir: b.next_dir})
+                          .tween({alpha: 0.0}, 5);
+          setTimeout(function(){ big.destroy(); }, 200);
+        });
+    }; 
+    s.map(helper);
+  };
+
+/****************************************************************************
+ *
+ *
+ *FEEDS
+ *
+ *
+ ****************************************************************************
+ */
+  var generateFeedStatistic = function(){
+    var statistic = {};
+    COLORS.map(function(c){
+      if (!statistic[c]) {return statistic[c] = 0; };
+    });
+    return statistic;
+  };
+//feed statistic
+  STATISTIC = generateFeedStatistic();
+  
+
+//detect the most often eaten color
+  var  leadColors = function(){
+    var acc = [];
+    for (var c in STATISTIC){
+      acc.push(STATISTIC[c]);
+    };
+    var max = acc.reduce(function(res, el){
+      if (res >= el){
+        return res;
+      } else {
+        return el;
+      }
+    });
+    acc = [];
+    for (var c in STATISTIC){
+      if (STATISTIC[c] == max){
+        return acc.push(c);
+      };
+    };
+    return acc;
+
+  };
+
 
 //generate feed
   var generateFeed = function(){
-    var randX = Crafty.math.randomInt(1, 50 - BLOCKSIZE) * BLOCKSIZE;
-    var randY = Crafty.math.randomInt(1, 50 - BLOCKSIZE) * BLOCKSIZE;
-    var randTime = Crafty.math.randomInt(3, 15) * 10;
+    //detect if snake ate same colored feeds
+    var blocks = Crafty('snake');
+    var head = Crafty(Crafty('snakeHead')[0]);
+    var b1 = Crafty(blocks[blocks.length - 1]);
+    var b2 = Crafty(blocks[blocks.length - 2]);
+    /*
+    for (var i = 0; i < blocks.length; i++){
+      var c = Crafty(blocks[i]).COLOR;
+      acc.push(c);
+    };
+    var same = acc.reduce(function(res, el){ });
+    */
+
+    var randX = Crafty.math.randomInt(1, GRIDWIDTH - BLOCKSIZE) * BLOCKSIZE;
+    var randY = Crafty.math.randomInt(1, GRIDHEIGHT - BLOCKSIZE) * BLOCKSIZE;
+    var randTime = Crafty.math.randomInt(3, 10) * 10;
     var feed = Crafty.e('feed').makeFeed(randX, randY, randFeedColor(), randTime);
 
-    if (feed.hit('block') || feed.hit('feed')) {
+    if (feed.hit('block') || feed.hit('feed') || feed.hit('Border')) {
       feed.destroy();
       generateFeed();
-    };
-     
+    }; /*
+    if (b1.COLOR == b2.COLOR) {
+      var randTime = Crafty.math.randomInt(5, 40);
+      var start = {x: head.x, y: head.y}
+      Crafty.e('feed').makeFeed()
+      
+    } */
 
   };
 //feed timeout
@@ -148,11 +279,15 @@
     var last = Crafty(Crafty('block')[Crafty('block').length - 1]);
     var head = Crafty(Crafty('block')[0]);
     if (!feed.eaten && feed.hit('snakeHead')) {
-      console.log(feed);
       head.next_feed = true;
-      last.attr({feed_COLOR: feed.COLOR})
+      last.attr({feed_COLOR: feed.COLOR});
+      
+      STATISTIC[feed.COLOR] += 1;
       feed.eaten = true;
+      boost(feed.COLOR);
+      
       feed.destroy();
+      
       generateFeed();
     } else {
       head.next_feed = false;
@@ -222,10 +357,21 @@ Crafty.scene('main', function(){
 
   //create feed
   generateFeed();
-
+  
+  //make a palette
+  var makePalette = function(){
+    var palette = {};
+    COLORS.map(function(c){
+      var randTime = Crafty.math.randomInt(10, 30);
+      if (!palette[c]){
+        palette[c] = {timer: randTime, counter: 0};
+      }
+    });
+    return palette;
+  };
   //create a world
   var world = Crafty.e('2D, Canvas')
-                    .attr({score: 0, lives: 3})
+                    .attr({score: 0, lives: 3, palette: makePalette()})
                     .bind('timerTick', function(e){
                       /*
                       //timer manipulation
@@ -246,7 +392,18 @@ Crafty.scene('main', function(){
                             Crafty(feeds[i]).destroy();
                           };
                         };
-                        crop();
+
+                        //crop the snake via color
+                        for (var c in this.palette){
+                          if (this.palette[c].timer == this.palette[c].counter) {
+                            console.log(c);
+                            crop(c);
+                            this.palette[c].counter = 0;
+                          } else {
+                            this.palette[c].counter += 1;
+                          }
+                        };
+
                         var biteSelf = Crafty(blocks[0]).hit('block');
                       
                       }

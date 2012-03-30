@@ -33,7 +33,7 @@
               window.setTimeout(function(){big.destroy(); }, 1000);
             };
               return this;
-          }
+          },
       });
     //snake head
       Crafty.c('snakeHead', {

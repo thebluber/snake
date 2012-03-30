@@ -1,10 +1,11 @@
 window.onload = function(){
   //anti scrolling
   document.onkeydown=function(){return event.keyCode!=38 && event.keyCode!=40};
-
+  GRIDWIDTH = 50;
+  GRIDHEIGHT = 40;
   BLOCKSIZE = 15;
-  WIDTH = 50 * BLOCKSIZE;
-  HEIGHT = 40 * BLOCKSIZE;
+  WIDTH = GRIDWIDTH * BLOCKSIZE;
+  HEIGHT = GRIDHEIGHT * BLOCKSIZE;
   //init Crafty
   Crafty.init(WIDTH, HEIGHT).canvas.init();
 
