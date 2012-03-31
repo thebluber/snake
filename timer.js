@@ -6,8 +6,8 @@
  *
  * */
     Crafty.c('Timer', {
-        _f           : 80  
-      , _start       : 80
+        _f           : 90  
+      , _start       : 90
       , f            : this._start
       , STOP         : true
       , name         : ''

@@ -38,9 +38,7 @@
     'rgb(0, 255, 255)',
     'rgb(0, 255, 255)',
     'rgb(255, 0, 255)',
-    'rgb(100, 100, 100)',
-
-  
+    'rgb(100, 100, 100)'
   ];
   
   //generate a random color
@@ -93,23 +91,24 @@
     Crafty.e('block').makeBlock(150 - BLOCKSIZE, 150, 'e', 'e', randColor());
     Crafty.e('block').makeBlock(150 - BLOCKSIZE * 2, 150, 'e', 'e', randColor());
     Crafty.e('block').makeBlock(150 - BLOCKSIZE * 3, 150, 'e', 'e', randColor());
-    Crafty.e('block').makeBlock(150 - BLOCKSIZE * 4, 150, 'e', 'e', randColor());
+    Crafty.e('block, tail').makeBlock(150 - BLOCKSIZE * 4, 150, 'e', 'e', randColor());
   }
 
   //move the snake
   var moveSnake = function(){
       var blocks = Crafty('block');
       var head = Crafty(blocks[0]);
+      var last = Crafty(blocks[blocks.length - 1]);
       if (blocks.length != 0) {
-        head.moveTo();
     
+        head.moveTo();
         for (var i = 1; i < blocks.length; i++){
           Crafty(blocks[i]).moveTo().eating();
+          Crafty(blocks[i]).next_feedColor = Crafty(blocks[i - 1]).current_feedColor;
           Crafty(blocks[i]).next_dir = Crafty(blocks[i - 1]).current_dir;
           Crafty(blocks[i]).x = Crafty(blocks[i - 1]).old_x;
           Crafty(blocks[i]).y = Crafty(blocks[i - 1]).old_y;
-          Crafty(blocks[i]).next_feed = Crafty(blocks[i - 1]).current_feed;
-        }
+        };
       };
   };
 
@@ -164,8 +163,8 @@
                                      .removeComponent('snake')
                                      .addComponent('big')
                                      .tween({alpha: 0.0}, 20);
+          STATISTIC[big.COLOR] -= 1;
           setTimeout(function(){ 
-            STATISTIC[big.COLOR] -= 1;
             big.destroy(); 
           }, 500);
         });
@@ -183,7 +182,7 @@
           var b = Crafty(blocks[i]);
           var big = Crafty.e('2D, Canvas, Color, Tween, big, block')
                           .attr({w: b.w + 8, h: b.h + 8, x: b.old_x - 4, y: b.old_y - 4, current_dir: b.current_dir, next_dir: b.next_dir})
-                          .tween({alpha: 0.0}, 5);
+                          .tween({alpha: 0.0}, 20);
           setTimeout(function(){ big.destroy(); }, 200);
         });
     }; 
@@ -266,21 +265,23 @@
 
   };
 //feed timeout
-  var timeOutFeed = function(feed){
-    feed.timeOut -= 1;
-    if ( feed.timeOut == 0) {
-      feed.setTimeOut();
-      generateFeed();
+  var timeOutFeed = function(){
+    var feeds = Crafty('feed');
+    for (var i = 0; i < feeds.length; i++){
+      Crafty(feeds[i]).timeOut -= 1
+      Crafty(feeds[i]).setTimeOut(); 
     };
   };
 
 //collision snake && feed
   var collide = function(feed){
     var last = Crafty(Crafty('block')[Crafty('block').length - 1]);
-    var head = Crafty(Crafty('block')[0]);
-    if (!feed.eaten && feed.hit('snakeHead')) {
-      head.next_feed = true;
-      last.attr({feed_COLOR: feed.COLOR});
+    var first = Crafty(Crafty('snake')[0]);
+    //console.log(feed);
+    //console.log('feed:' + feed.COLOR);
+    
+    if (!feed.eaten && !feed.timeOuted && feed.hit('snakeHead')) {
+      first.next_feedColor = feed.COLOR;
       
       STATISTIC[feed.COLOR] += 1;
       feed.eaten = true;
@@ -290,13 +291,8 @@
       
       generateFeed();
     } else {
-      head.next_feed = false;
+      first.next_feedColor = false;
     };
-    if (last.current_feed){
-      Crafty.e('block').makeBlock(last.x, last.y, "", last.current_dir, last.feed_COLOR);
-      last = Crafty(Crafty('block')[Crafty('block').length - 1]);
-      Crafty('big').destroy();
-    }; 
   }
 
 //timer manipulation
@@ -381,24 +377,26 @@ Crafty.scene('main', function(){
                       if (!GAMEOVER) {
                         //move Snake
                         moveSnake();
+                        //feeds
+                        timeOutFeed();
 
+                        //detect collision
                         var blocks = Crafty('block');
                         var feeds = Crafty('feed');
 
                         for (var i = 0; i < feeds.length; i++){
                           collide(Crafty(feeds[i]));
-                          timeOutFeed(Crafty(feeds[i]));
-                          if (Crafty(feeds[i])._alpha < 0.1) {
-                            Crafty(feeds[i]).destroy();
-                          };
                         };
+
 
                         //crop the snake via color
                         for (var c in this.palette){
                           if (this.palette[c].timer == this.palette[c].counter) {
-                            console.log(c);
                             crop(c);
-                            this.palette[c].counter = 0;
+                            //set tail
+                            if (!Crafty(blocks[blocks.length - 1]).has('tail')) {Crafty(blocks[blocks.length - 1]).addComponent('tail'); };
+
+                            this.palette[c].counter = 0;1
                           } else {
                             this.palette[c].counter += 1;
                           }
@@ -407,13 +405,6 @@ Crafty.scene('main', function(){
                         var biteSelf = Crafty(blocks[0]).hit('block');
                       
                       }
-                     /* 
-                      if (Crafty(blocks[0]).hit('Border')) {
-                        for (var i = 0; i < blocks.length; i++){
-                          Crafty(blocks[i]).x = Crafty(blocks[i]).old_x;
-                          Crafty(blocks[i]).y = Crafty(blocks[i]).old_y;
-                        }
-                      } */
                     })  
                     .bind('KeyDown', function(e){
                       var blocks = Crafty('block');
