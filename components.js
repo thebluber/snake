@@ -25,7 +25,6 @@
           },
           eating: function(){
             if (this.current_feedColor){
-              console.log(this[0]);
               var big = Crafty.e('2D, Canvas, Color, Tween, big')
                               .attr({w: this.w + 8, h: this.h + 8, x: this.x - 4, y: this.y - 4})
                               .color(this.COLOR)

@@ -32,6 +32,18 @@
     'rgb(0, 255, 0)',
     'rgb(0, 255, 0)',
     'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 255, 0)',
     'rgb(0, 0, 255)',
     'rgb(255, 255, 0)',
     'rgb(0, 255, 255)',
@@ -182,6 +194,7 @@
           var b = Crafty(blocks[i]);
           var big = Crafty.e('2D, Canvas, Color, Tween, big, block')
                           .attr({w: b.w + 8, h: b.h + 8, x: b.old_x - 4, y: b.old_y - 4, current_dir: b.current_dir, next_dir: b.next_dir})
+                          .color(b.COLOR)
                           .tween({alpha: 0.0}, 20);
           setTimeout(function(){ big.destroy(); }, 200);
         });
