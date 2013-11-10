@@ -326,7 +326,6 @@
     };
   };
 
-/*
 //gameover
   var gameOver = function(){
     var blocks = Crafty('block');
@@ -345,7 +344,6 @@
     };
 
  }
-*/
 
 //main scene
 Crafty.scene('main', function(){
@@ -461,7 +459,7 @@ Crafty.scene('main', function(){
                           break;
 
                           case Crafty.keys.SPACE:
-                              Timer.stop();
+                            Timer.stop();
                           break;
 
                           default:

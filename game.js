@@ -1,7 +1,7 @@
 window.onload = function(){
-    BLOCKSIZE = 14;
-    WIDTH = 50 * BLOCKSIZE;
-    HEIGHT = 50 * BLOCKSIZE;
+    BLOCKSIZE = 15;
+    WIDTH = 60 * BLOCKSIZE;
+    HEIGHT = 30 * BLOCKSIZE;
   //init Crafty
     Crafty.init(WIDTH, HEIGHT).canvas.init();
   
